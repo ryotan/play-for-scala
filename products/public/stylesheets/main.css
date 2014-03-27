@@ -19,13 +19,8 @@ body, p, label {
 }
 
 div.screenshot {
-    width: 800px;
     margin: 20px;
     background-color: #d0e7ef;
-}
-
-.navbar-fixed-top .navbar-inner {
-    padding-left: 20px;
 }
 
 .navbar .nav > li > a {
@@ -33,12 +28,7 @@ div.screenshot {
 }
 
 .screenshot .container {
-    width: 760px;
     padding: 20px;
-}
-
-.navbar-fixed-top, .navbar-fixed-bottom {
-    position: relative;
 }
 
 h1 {
