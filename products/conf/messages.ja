@@ -1,1 +1,6 @@
 application.name = 製品カタログ
+ean = EAN
+name = 品名
+description = 詳細
+
+products.details = 商品: {0}
