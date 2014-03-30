@@ -1,21 +1,38 @@
 package models
 
+import play.api.db.DB
+import play.api.Play.current
+import anorm._
+import anorm.SqlParser._
+
 case class Product(ean: Long, name: String, description: String)
 
 object Product {
-  var products = Set(
-    Product(5010255079763L, "Paperclips Large", "Large Plain Pack of 1000"),
-    Product(5018206244666L, "Giant Paperclips", "Giant Plain 51mm 100 pack"),
-    Product(5018306332812L, "Paperclip Giant Plain", "Giant Plain Pack of 1000"),
-    Product(5018306312913L, "No Tear Paper Clip", "No Tear Extra Large Pack of 1000"),
-    Product(5018206244611L, "Zebra Paperclip", "Zebra Length 28mm Assorted 150 Pack")
-  )
 
-  def findAll = products.toList.sortBy(_.ean)
+  def findAll = DB.withConnection {
+    implicit conn =>
+      SQL("select * from PRODUCTS").as(product *)
+  }
 
-  def findByEan(ean: Long) = products.find(_.ean == ean)
+  def findByEan(ean: Long) = DB.withConnection {
+    implicit conn =>
+      SQL("select * from PRODUCTS where ean = {ean}").on(
+        'ean -> ean
+      ).as(product singleOpt)
+  }
 
-  def add(product: Product) {
-    products += product
+  def add(product: Product) = DB.withConnection {
+    implicit conn =>
+      SQL("insert into PRODUCTS(EAN, NAME, DESCRIPTION) values({ean}, {name}, {description})").on(
+        'ean -> product.ean,
+        'name -> product.ean,
+        'description -> product.description
+      ).executeInsert()
+  }
+
+  val product = {
+    long("ean") ~ str("name") ~ str("description") map {
+      case ean ~ name ~ description => Product(ean, name, description)
+    }
   }
 }
