@@ -4,3 +4,15 @@ name = 品名
 description = 詳細
 
 products.details = 商品: {0}
+
+products.list.navigation = 商品一覧
+
+products.form = 商品詳細
+products.new = （新規）
+products.new.command = 登録
+
+products.new.submit = 登録
+products.new.success = {0} を登録したよ。
+
+validation.errors = 入力項目にエラーが。。。
+validation.ean.duplicate = もうこのEANコードの商品は登録されてるよん。

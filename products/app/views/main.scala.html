@@ -1,4 +1,4 @@
-@(title: String)(content: Html)(implicit lang: Lang)
+@(title: String)(content: Html)(implicit flash: Flash, lang: Lang)
 
 <!DOCTYPE html>
 
@@ -11,15 +11,47 @@
     </head>
     <body>
 
-        <div class="navbar navbar-default">
-            <a class="navbar-brand" href="@routes.Application.index()">
-            @Messages("application.name")
-            </a>
-        </div>
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="@routes.Application.index()">@Messages("application.name")</a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="navigation">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="@routes.Products.list()">@Messages("products.list.navigation")</a>
+                        </li>
+                        <li>
+                            <a href="@routes.Products.newProduct()">
+                                <i class="glyphicon-plus"></i>
+                                @Messages("products.new.command")
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
 
         <div class="screenshot">
             <div class="container">
-            @content
+                @if(flash.get("success").isDefined) {
+                    <div class="alert alert-success">
+                    @flash.get("success")
+                    </div>
+                }
+                @if(flash.get("error").isDefined) {
+                    <div class="alert alert-danger">
+                    @flash.get("error")
+                    </div>
+                }
+                @content
             </div>
         </div>
     </body>
