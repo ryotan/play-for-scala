@@ -5,7 +5,11 @@ target
 tmp
 .history
 dist
-/.idea
+/.idea/libraries
+/.idea/modules
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/workspace.xml
 /*.iml
 /out
 /.idea_modules
