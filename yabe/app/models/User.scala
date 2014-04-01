@@ -24,9 +24,16 @@ case class User(email: String, password: String, fullname: String, isAdmin: Bool
 
 object User {
   def findByEmail(email: String) = DB.withConnection { implicit connection =>
-    SQL("select * from Users where email = {email}").on {
+    SQL("select * from Users where email = {email}").on(
       'email -> email
-    }.as(user singleOpt)
+    ).as(user singleOpt)
+  }
+
+  def connect(email: String, password: String) = DB.withConnection { implicit connection =>
+    SQL("select * from Users where email = {email} and password = {password}").on(
+      'email -> email,
+      'password -> password
+    ).as(user singleOpt)
   }
 
   val user = {

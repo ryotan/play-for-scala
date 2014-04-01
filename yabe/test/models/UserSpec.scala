@@ -16,7 +16,15 @@ class UserSpec extends Specification {
 
       val bob = User.findByEmail("bob@example.com").get
       bob.email === "bob@example.com"
-      bob.fullname must_== "Bob"
+      bob.fullname === "Bob"
+    }
+
+    "provide connection as a user" in new WithApplication {
+      new User("bob@example.com", "secret", "Bob", isAdmin = false).save()
+
+      User.connect("bob@example.com", "secret").isDefined === true
+      User.connect("bob@example.com", "not secret").isDefined === false
+      User.connect("not a user email", "secret").isDefined === false
     }
   }
 }
