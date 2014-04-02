@@ -22,6 +22,9 @@ class UserSpec extends Specification {
 
       val admin = User.findByEmail("admin@example.com").get
       admin.isAdmin === true
+
+      val none = User.findByEmail("none")
+      none.isDefined === false
     }
 
     "provide connection as a user" in new WithApplication {
