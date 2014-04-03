@@ -12,9 +12,9 @@ import anorm.SqlParser._
  * @author ryotan
  * @since 1.0
  */
-case class Post(title: String, content: String, author: User, postedAt: Date = new Date, id: Option[Long] = None) {
+case class Post(id: Pk[Long], title: String, content: String, author: User, postedAt: Date) {
   def save(): Option[Long] = DB.withConnection { implicit connection =>
-    SQL("insert into Posts(title, content, author_id, posted_at) values({title}, {content}, {authorId}, {postedAt})").on (
+    SQL("insert into Posts(title, content, author_id, posted_at) values({title}, {content}, {authorId}, {postedAt})").on(
       'title -> this.title,
       'content -> this.content,
       'authorId -> this.author.id,
@@ -24,16 +24,18 @@ case class Post(title: String, content: String, author: User, postedAt: Date = n
 }
 
 object Post {
+  def apply(title: String, content: String, author: User, postedAt: Date = new Date) = new Post(NotAssigned, title, content, author, postedAt)
+
   def findById(id: Long) = DB.withConnection { implicit connection =>
-    SQL("select * from Posts where id = {id}").on (
+    SQL("select * from Posts where id = {id}").on(
       'id -> id
     ).as(post *)
   }
 
   val post = {
-    long("id") ~ str("title") ~ str("content") ~ long("author_id") ~ date("posted_at") map {
+    get[Pk[Long]]("id") ~ str("title") ~ str("content") ~ long("author_id") ~ date("posted_at") map {
       case id ~ title ~ content ~ authorId ~ postedAt =>
-        new Post(title, content, User.findById(authorId).get, postedAt, Option(id))
+        new Post(id, title, content, User.findById(authorId).get, postedAt)
     }
   }
 }

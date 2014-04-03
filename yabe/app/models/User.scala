@@ -11,7 +11,7 @@ import anorm.SqlParser._
  * @author ryotan
  * @since 1.0
  */
-case class User(email: String, password: String, fullname: String, isAdmin: Boolean, id: Option[Long] = None) {
+case class User(id: Pk[Long], email: String, password: String, fullname: String, isAdmin: Boolean) {
 
   def save(): Option[Long] = DB.withConnection { implicit connection =>
     SQL("insert into Users(email, password, fullname, is_admin) values ({email}, {password}, {fullname}, {isAdmin})")
@@ -25,6 +25,8 @@ case class User(email: String, password: String, fullname: String, isAdmin: Bool
 }
 
 object User {
+  def apply(email: String, password: String, fullname: String, isAdmin: Boolean) = new User(NotAssigned, email, password, fullname, isAdmin)
+
   def findById(id: Long) = DB.withConnection { implicit connection =>
     SQL("select * from Users where id = {id}").on(
       'id -> id
@@ -45,9 +47,9 @@ object User {
   }
 
   val user = {
-    long("id") ~ str("email") ~ str("password") ~ str("fullname") ~ str("is_admin") map {
+    get[Pk[Long]]("id") ~ str("email") ~ str("password") ~ str("fullname") ~ str("is_admin") map {
       case id ~ email ~ password ~ fullname ~ isAdmin =>
-        User(email, password, fullname, "1" == isAdmin, Option(id))
+        User(id, email, password, fullname, "1" == isAdmin)
     }
   }
 }

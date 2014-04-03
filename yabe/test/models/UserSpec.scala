@@ -12,9 +12,9 @@ import play.api.test.WithApplication
 class UserSpec extends Specification {
   "User" should {
     "save user information" in new WithApplication {
-      new User("bob@example.com", "secret", "Bob", isAdmin = false).save().get === 1
-      new User("admin@example.com", "secret", "Admin", isAdmin = true).save().get === 2
-      new User("bob@example.com", "secret", "Admin", isAdmin = true).save().get === 3
+      User("bob@example.com", "secret", "Bob", isAdmin = false).save().get === 1
+      User("admin@example.com", "secret", "Admin", isAdmin = true).save().get === 2
+      User("bob@example.com", "secret", "Admin", isAdmin = true).save().get === 3
 
       val found = User.findByEmail("bob@example.com")
       found.size === 2
@@ -33,14 +33,14 @@ class UserSpec extends Specification {
     }
 
     "find user by id" in new WithApplication {
-      val id = new User("bob@example.com", "secret", "Bob", isAdmin = false).save().get
+      val id = User("bob@example.com", "secret", "Bob", isAdmin = false).save().get
 
       val bob = User.findById(id).get
       bob.email === "bob@example.com"
     }
 
     "provide connection as a user" in new WithApplication {
-      new User("bob@example.com", "secret", "Bob", isAdmin = false).save().get === 1
+      User("bob@example.com", "secret", "Bob", isAdmin = false).save().get === 1
 
       User.connect("bob@example.com", "secret").isDefined === true
       User.connect("bob@example.com", "not secret").isDefined === false

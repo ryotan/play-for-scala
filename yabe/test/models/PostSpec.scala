@@ -12,15 +12,16 @@ import java.util.Date
  */
 class PostSpec extends Specification {
   "Post" should {
-    "persist blog post" in new WithApplication {
+    "persist blog post and find post by id" in new WithApplication {
       val current = new Date()
-      val authorId = new User("author@example.com", "pwd", "Blog Author", isAdmin = false).save().get
-      val postId = new Post("title", "contents", User.findById(authorId).get, current).save().get
+      val authorId = User("author@example.com", "pwd", "Blog Author", isAdmin = false).save().get
+      val postId = Post("title", "contents", User.findById(authorId).get, current).save().get
 
       val post = Post.findById(postId).head
       post.title === "title"
       post.content === "contents"
       post.postedAt.getTime === current.getTime
+      post.author.id.get === authorId
     }
   }
 }
