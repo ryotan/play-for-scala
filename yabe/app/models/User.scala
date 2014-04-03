@@ -25,10 +25,16 @@ case class User(email: String, password: String, fullname: String, isAdmin: Bool
 }
 
 object User {
-  def findByEmail(email: String) = DB.withConnection { implicit connection =>
-    SQL("select * from Users where email = {email}").on(
-      'email -> email
+  def findById(id: Long) = DB.withConnection { implicit connection =>
+    SQL("select * from Users where id = {id}").on(
+      'id -> id
     ).as(user singleOpt)
+  }
+
+  def findByEmail(email: String) = DB.withConnection { implicit connection =>
+    SQL("select * from Users where email = {email} order by id asc").on(
+      'email -> email
+    ).as(user *)
   }
 
   def connect(email: String, password: String) = DB.withConnection { implicit connection =>

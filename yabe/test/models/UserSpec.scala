@@ -14,17 +14,29 @@ class UserSpec extends Specification {
     "save user information" in new WithApplication {
       new User("bob@example.com", "secret", "Bob", isAdmin = false).save().get === 1
       new User("admin@example.com", "secret", "Admin", isAdmin = true).save().get === 2
+      new User("bob@example.com", "secret", "Admin", isAdmin = true).save().get === 3
 
-      val bob = User.findByEmail("bob@example.com").get
+      val found = User.findByEmail("bob@example.com")
+      found.size === 2
+
+      val bob = found.head
+      bob.id.get === 1
       bob.email === "bob@example.com"
       bob.fullname === "Bob"
       bob.isAdmin === false
 
-      val admin = User.findByEmail("admin@example.com").get
+      val admin = User.findByEmail("admin@example.com").head
       admin.isAdmin === true
 
-      val none = User.findByEmail("none")
+      val none = User.findByEmail("none").headOption
       none.isDefined === false
+    }
+
+    "find user by id" in new WithApplication {
+      val id = new User("bob@example.com", "secret", "Bob", isAdmin = false).save().get
+
+      val bob = User.findById(id).get
+      bob.email === "bob@example.com"
     }
 
     "provide connection as a user" in new WithApplication {
