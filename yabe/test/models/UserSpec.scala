@@ -20,7 +20,7 @@ class UserSpec extends Specification {
       found.size === 2
 
       val bob = found.head
-      bob.id.get === 1
+      bob.userId.get === 1
       bob.email === "bob@example.com"
       bob.fullname === "Bob"
       bob.isAdmin === false

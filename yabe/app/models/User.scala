@@ -11,7 +11,7 @@ import anorm.SqlParser._
  * @author ryotan
  * @since 1.0
  */
-case class User(id: Pk[Long], email: String, password: String, fullname: String, isAdmin: Boolean) {
+case class User(userId: Pk[Long], email: String, password: String, fullname: String, isAdmin: Boolean) {
 
   def save(): Option[Long] = DB.withConnection { implicit connection =>
     SQL("insert into Users(email, password, fullname, is_admin) values ({email}, {password}, {fullname}, {isAdmin})")
@@ -27,14 +27,14 @@ case class User(id: Pk[Long], email: String, password: String, fullname: String,
 object User {
   def apply(email: String, password: String, fullname: String, isAdmin: Boolean) = new User(NotAssigned, email, password, fullname, isAdmin)
 
-  def findById(id: Long) = DB.withConnection { implicit connection =>
-    SQL("select * from Users where id = {id}").on(
-      'id -> id
+  def findById(userId: Long) = DB.withConnection { implicit connection =>
+    SQL("select * from Users where user_id = {userId}").on(
+      'userId -> userId
     ).as(user singleOpt)
   }
 
   def findByEmail(email: String) = DB.withConnection { implicit connection =>
-    SQL("select * from Users where email = {email} order by id asc").on(
+    SQL("select * from Users where email = {email} order by user_id asc").on(
       'email -> email
     ).as(user *)
   }
@@ -47,9 +47,9 @@ object User {
   }
 
   val user = {
-    get[Pk[Long]]("id") ~ str("email") ~ str("password") ~ str("fullname") ~ str("is_admin") map {
-      case id ~ email ~ password ~ fullname ~ isAdmin =>
-        User(id, email, password, fullname, "1" == isAdmin)
+    get[Pk[Long]]("user_id") ~ str("email") ~ str("password") ~ str("fullname") ~ str("is_admin") map {
+      case userId ~ email ~ password ~ fullname ~ isAdmin =>
+        User(userId, email, password, fullname, "1" == isAdmin)
     }
   }
 }

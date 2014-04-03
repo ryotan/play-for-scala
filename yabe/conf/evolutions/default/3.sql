@@ -6,7 +6,7 @@ CREATE TABLE Posts (
   content   CLOB         NOT NULL,
   author_id BIGINT       NOT NULL REFERENCES Users (id),
   posted_at TIMESTAMP    NOT NULL
-)
+);
 
-  # --- !Downs
+# --- !Downs
 DROP TABLE Posts;

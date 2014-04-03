@@ -21,7 +21,7 @@ class PostSpec extends Specification {
       post.title === "title"
       post.content === "contents"
       post.postedAt.getTime === current.getTime
-      post.author.id.get === authorId
+      post.author.userId.get === authorId
     }
   }
 }
