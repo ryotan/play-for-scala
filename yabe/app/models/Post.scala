@@ -27,15 +27,15 @@ object Post {
   def apply(title: String, content: String, author: User, postedAt: Date = new Date) = new Post(NotAssigned, title, content, author, postedAt)
 
   def findById(postId: Long) = DB.withConnection { implicit connection =>
-    SQL("select * from Posts where post_id = {postId}").on(
+    SQL("select * from Posts join Users on Posts.author_id = Users.user_id where post_id = {postId}").on(
       'postId -> postId
-    ).as(post *)
+    ).as(simple *)
   }
 
-  val post = {
-    get[Pk[Long]]("post_id") ~ str("title") ~ str("content") ~ long("author_id") ~ date("posted_at") map {
-      case postId ~ title ~ content ~ authorId ~ postedAt =>
-        new Post(postId, title, content, User.findById(authorId).get, postedAt)
+  val simple = {
+    get[Pk[Long]]("post_id") ~ str("title") ~ str("content") ~ date("posted_at") ~ User.simple map {
+      case postId ~ title ~ content ~ postedAt ~ user =>
+        new Post(postId, title, content, user, postedAt)
     }
   }
 }
