@@ -39,9 +39,9 @@ object User {
     ).as(user *)
   }
 
-  def connect(email: String, password: String) = DB.withConnection { implicit connection =>
-    SQL("select * from Users where email = {email} and password = {password}").on(
-      'email -> email,
+  def connect(userId: Long, password: String) = DB.withConnection { implicit connection =>
+    SQL("select * from Users where user_id = {userId} and password = {password}").on(
+      'userId -> userId,
       'password -> password
     ).as(user singleOpt)
   }

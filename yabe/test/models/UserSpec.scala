@@ -40,11 +40,11 @@ class UserSpec extends Specification {
     }
 
     "provide connection as a user" in new WithApplication {
-      User("bob@example.com", "secret", "Bob", isAdmin = false).save().get === 1
+      val id = User("bob@example.com", "secret", "Bob", isAdmin = false).save().get
 
-      User.connect("bob@example.com", "secret").isDefined === true
-      User.connect("bob@example.com", "not secret").isDefined === false
-      User.connect("not a user email", "secret").isDefined === false
+      User.connect(id, "secret").isDefined === true
+      User.connect(id, "not secret").isDefined === false
+      User.connect(id + 1, "secret").isDefined === false
     }
   }
 }
