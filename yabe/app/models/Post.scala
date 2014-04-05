@@ -13,6 +13,16 @@ import anorm.SqlParser._
  * @since 1.0
  */
 case class Post(postId: Pk[Long], title: String, content: String, author: User, postedAt: Date) {
+  def addComment(author: String, content: String): Option[Long] = {
+    Comment(author, new Date, content, this.postId.get).save()
+  }
+
+  def findComments() = DB.withConnection { implicit connection =>
+    SQL("select * from Posts join Comments on Posts.post_id = Comments.posted_on where Posts.post_id = {postId} order by comment_id asc").on(
+      'postId -> this.postId.get
+    ).as(Comment.simple *)
+  }
+
   def save(): Option[Long] = DB.withConnection { implicit connection =>
     SQL("insert into Posts(title, content, author_id, posted_at) values({title}, {content}, {authorId}, {postedAt})").on(
       'title -> this.title,
@@ -29,7 +39,7 @@ object Post {
   def findById(postId: Long) = DB.withConnection { implicit connection =>
     SQL("select * from Posts join Users on Posts.author_id = Users.user_id where post_id = {postId}").on(
       'postId -> postId
-    ).as(simple *)
+    ).as(simple singleOpt)
   }
 
   val simple = {
