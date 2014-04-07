@@ -44,5 +44,17 @@ class PostSpec extends Specification {
       comments(0).author === "comment author 1"
       comments(1).author === "comment author 2"
     }
+
+    "find the newest Post" in new WithApplication {
+      val current = new Date
+      val authorId = User("author@example.com", "pwd", "Blog Author", isAdmin = false).save().get
+      val user = User.findById(authorId).get
+      val second = Post("title", "contents2", user, current).save().get
+      val first = Post("title", "contents1", user, new Date(current.getTime + 10000)).save().get
+      val third = Post("title", "contents3", user, new Date(current.getTime - 10000)).save().get
+
+      val post = Post.newest().get
+      post.content === "contents1"
+    }
   }
 }

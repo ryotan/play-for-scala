@@ -42,6 +42,16 @@ object Post {
     ).singleOpt(simple)
   }
 
+  def newest() = DB.withConnection { implicit connection =>
+    SQL(" select *" +
+        " from Posts" +
+        "   join Users" +
+        "     on Posts.author_id = Users.user_id" +
+        " order by posted_at desc" +
+        " limit 1"
+    ).asSimple(simple).singleOpt()
+  }
+
   val simple = {
     get[Pk[Long]]("post_id") ~ str("title") ~ str("content") ~ date("posted_at") ~ User.simple map {
       case postId ~ title ~ content ~ postedAt ~ user =>
