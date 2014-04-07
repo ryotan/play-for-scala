@@ -30,20 +30,20 @@ object User {
   def findById(userId: Long) = DB.withConnection { implicit connection =>
     SQL("select * from Users where user_id = {userId}").on(
       'userId -> userId
-    ).as(simple singleOpt)
+    ).singleOpt(simple)
   }
 
   def findByEmail(email: String) = DB.withConnection { implicit connection =>
     SQL("select * from Users where email = {email} order by user_id asc").on(
       'email -> email
-    ).as(simple *)
+    ).list(simple)
   }
 
   def connect(userId: Long, password: String) = DB.withConnection { implicit connection =>
     SQL("select * from Users where user_id = {userId} and password = {password}").on(
       'userId -> userId,
       'password -> password
-    ).as(simple singleOpt)
+    ).singleOpt(simple)
   }
 
   val simple = {

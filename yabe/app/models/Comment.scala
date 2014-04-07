@@ -30,7 +30,7 @@ object Comment {
   def findById(commentId: Long) = DB.withConnection { implicit connection =>
     SQL("select * from Comments where comment_id = {commentId}").on(
     'commentId -> commentId
-    ).as(simple singleOpt)
+    ).singleOpt(simple)
 
   }
 

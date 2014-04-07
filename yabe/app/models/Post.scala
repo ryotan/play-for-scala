@@ -20,7 +20,7 @@ case class Post(postId: Pk[Long], title: String, content: String, author: User, 
   def findComments() = DB.withConnection { implicit connection =>
     SQL("select * from Posts join Comments on Posts.post_id = Comments.posted_on where Posts.post_id = {postId} order by comment_id asc").on(
       'postId -> this.postId.get
-    ).as(Comment.simple *)
+    ).list(Comment.simple)
   }
 
   def save(): Option[Long] = DB.withConnection { implicit connection =>
@@ -39,7 +39,7 @@ object Post {
   def findById(postId: Long) = DB.withConnection { implicit connection =>
     SQL("select * from Posts join Users on Posts.author_id = Users.user_id where post_id = {postId}").on(
       'postId -> postId
-    ).as(simple singleOpt)
+    ).singleOpt(simple)
   }
 
   val simple = {
