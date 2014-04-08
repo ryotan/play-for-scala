@@ -49,7 +49,20 @@ object Post {
         "     on Posts.author_id = Users.user_id" +
         " order by posted_at desc" +
         " limit 1"
-    ).asSimple(simple).singleOpt()
+    ).singleOpt(simple)
+  }
+
+  def older(offset: Integer, number: Integer) = DB.withConnection { implicit connection =>
+    SQL(" select *" +
+        " from Posts" +
+        "   join Users" +
+        "     on Posts.author_id = Users.user_id" +
+        " order by posted_at desc" +
+        " limit {number} offset {offset}"
+    ).on(
+          'number -> number,
+          'offset -> offset
+        ).list(simple)
   }
 
   val simple = {

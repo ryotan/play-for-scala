@@ -54,7 +54,20 @@ class PostSpec extends Specification {
       val third = Post("title", "contents3", user, new Date(current.getTime - 10000)).save().get
 
       val post = Post.newest().get
-      post.content === "contents1"
+      post.postId.get === first
+    }
+
+    "find older Posts" in new WithApplication {
+      val current = new Date
+      val authorId = User("author@example.com", "pwd", "Blog Author", isAdmin = false).save().get
+      val user = User.findById(authorId).get
+      val third = Post("title", "contents3", user, new Date(current.getTime - 10000)).save().get
+      val first = Post("title", "contents1", user, new Date(current.getTime + 10000)).save().get
+      val second = Post("title", "contents2", user, current).save().get
+
+      val posts = Post.older(1, 2)
+      posts(0).postId.get === second
+      posts(1).postId.get === third
     }
   }
 }
