@@ -1,7 +1,38 @@
-@(message: String)
+@(newest: Option[Post], older: Seq[Post])
 
-@main("Welcome to Play") {
+@main("Home") {
 
-    @play20.welcome(message)
-
+  @if(newest.isDefined) {
+    <div class="post">
+      <h2 class="post-title">
+        <a href="#">@newest.get.title</a>
+      </h2>
+      <div class="post-metadata">
+        <span class="post-author">by @newest.get.author.fullname</span>
+        <span class="post-date">@newest.get.postedAt.format("MMM dd")</span>
+        <div class="post-content">
+        @newest.get.content
+        </div>
+      </div>
+    </div>
+  }
+  @if(older.nonEmpty) {
+    <div class="older-posts">
+      <h3>Older posts <span class="from">from this blog</span></h3>
+      @for(p <- older) {
+        <div class="post">
+          <h2 class="post-title">
+            <a href="#">@p.title</a>
+          </h2>
+        </div>
+        <div class="post-metadata">
+          <span class="post-author">by @p.author.fullname</span>
+          <span class="post-date">@p.postedAt.format("MM ddd")</span>
+        </div>
+      }
+    </div>
+    @if(!newest.isDefined && older.isEmpty) {
+      <div class="empty">There is currently nothing to read here.</div>
+    }
+  }
 }
