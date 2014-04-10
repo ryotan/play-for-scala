@@ -1,0 +1,40 @@
+@* Display a post in one of these models: 'full', 'home', 'teaser' *@
+@(post: Post, as: String)
+
+@defining((post, as == "full", as == "home", as == "teaser")) { case (p, full, home, teaser) =>
+
+<div class="post @{if(teaser) "teaser" }">
+  <h2 class="post-title">
+    <a href="#">@p.title</a>
+  </h2>
+  <div class="post-metadata">
+    <span class="post-author">by @p.author.fullname</span>
+    <span class="post-date">@p.postedAt.format("dd MMM yy")</span>
+  </div>
+  @if(teaser) {
+    <div class="post-content">
+      <div class="about">Detail: </div>
+      @p.content
+    </div>
+  }
+  @if(full) {
+    <div class="comments">
+      <h3>
+        @if(p.findComments().size == 0) {"no"} comments
+      </h3>
+      @for(c <- p.findComments()) {
+        <div class="comment">
+          <div class="comment-metadata">
+            <span class="comment-author">by @c.author,</span>
+            <span class="comment-date">@c.postedAt.format("dd MMM yy")</span>
+          </div>
+          <div class="comment-content">
+            <div class="about">Detail: </div>
+            @c.content
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
+}
