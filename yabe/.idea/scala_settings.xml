@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ScalaProjectSettings">
     <option name="classCountToUseImportOnDemand" value="99" />
+    <option name="disableLangInjection" value="false" />
     <option name="importsWithPrefix">
       <array>
         <option value="exclude:scala.collection.mutable.ArrayBuffer" />
@@ -50,6 +51,7 @@
       </array>
     </option>
     <option name="showArgumentsToByNameParams" value="true" />
+    <option name="treatDocCommentAsBlockComment" value="true" />
   </component>
 </project>
 
