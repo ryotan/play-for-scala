@@ -9,4 +9,8 @@ object Application extends Controller {
     Ok(views.html.index(Post.newest(), Post.older(1, 10)))
   }
 
+  def show(id: Long) = Action {
+    Ok(views.html.show(Post.findById(id).get))
+  }
+
 }

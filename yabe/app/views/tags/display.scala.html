@@ -5,7 +5,7 @@
 
 <div class="post @{if(teaser) "teaser" }">
   <h2 class="post-title">
-    <a href="#">@p.title</a>
+    <a href="@routes.Application.show(p.postId.get)">@p.title</a>
   </h2>
   <div class="post-metadata">
     <span class="post-author">by @p.author.fullname</span>
