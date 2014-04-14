@@ -69,5 +69,18 @@ class PostSpec extends Specification {
       posts(0).postId.get === second
       posts(1).postId.get === third
     }
+
+    "find next and previous post" in new WithApplication {
+      val current = new Date
+      val authorId = User("author@example.com", "pwd", "Blog Author", isAdmin = false).save().get
+      val user = User.findById(authorId).get
+      val second = Post("title", "contents2", user, current).save().get
+      val first = Post("title", "contents1", user, new Date(current.getTime + 10000)).save().get
+      val third = Post("title", "contents3", user, new Date(current.getTime - 10000)).save().get
+
+      val post = Post.findById(second).get
+      post.previous().get.postId.get === third
+      post.next().get.postId.get === first
+    }
   }
 }

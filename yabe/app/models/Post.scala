@@ -31,6 +31,18 @@ case class Post(postId: Pk[Long], title: String, content: String, author: User, 
       'postedAt -> this.postedAt
     ).executeInsert()
   }
+
+  def previous(): Option[Post] = DB.withConnection { implicit connection =>
+    SQL("select * from Posts join Users on Posts.author_id = Users.user_id where Posts.posted_at < {postedAt} order by posted_at desc limit 1").on(
+      'postedAt -> this.postedAt
+    ).singleOpt(Post.simple)
+  }
+
+  def next(): Option[Post] = DB.withConnection { implicit connection =>
+    SQL("select * from Posts join Users on Posts.author_id = Users.user_id where Posts.posted_at > {postedAt} order by posted_at asc limit 1").on(
+      'postedAt -> this.postedAt
+    ).singleOpt(Post.simple)
+  }
 }
 
 object Post {
