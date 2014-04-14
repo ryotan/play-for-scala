@@ -1,18 +1,18 @@
-@(post: Post)
+@(post: Post, prev: Option[Post], next: Option[Post])
 
 @main(post.title) {
   <ul id="pagination">
-    @if(post.previous().isDefined) {
+    @if(prev.isDefined) {
       <li id="previous">
-        <a href="@routes.Application.show(post.previous().get.postId.get)">
-        @post.previous().get.title
+        <a href="@routes.Application.show(prev.get.postId.get)">
+        @prev.get.title
         </a>
       </li>
     }
-    @if(post.next().isDefined) {
+    @if(next.isDefined) {
       <li id="next">
-        <a href="@routes.Application.show(post.next().get.postId.get)">
-        @post.next().get.title
+        <a href="@routes.Application.show(next.get.postId.get)">
+        @next.get.title
         </a>
       </li>
     }

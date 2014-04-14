@@ -10,7 +10,8 @@ object Application extends Controller {
   }
 
   def show(id: Long) = Action {
-    Ok(views.html.show(Post.findById(id).get))
+    val post = Post.findById(id).get
+    Ok(views.html.show(post, post.previous(), post.next()))
   }
 
 }
