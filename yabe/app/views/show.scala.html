@@ -1,4 +1,5 @@
-@(post: Post, prev: Option[Post], next: Option[Post])
+@(post: Post, prev: Option[Post], next: Option[Post], comment: Form[CommentData])
+@import helper._
 
 @main(post.title) {
   <ul id="pagination">
@@ -18,4 +19,11 @@
     }
   </ul>
   @tags.display(post, "full")
+
+  <h3>Post a comment</h3>
+  @form(action = routes.Application.postComment(post.postId.get)) {
+    @inputText(comment("author"))
+    @textarea(comment("content"))
+    <input type="submit" name="submit-comment" value="Submit your comment" />
+  }
 }
