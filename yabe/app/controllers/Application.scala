@@ -11,9 +11,9 @@ object Application extends Controller {
     Ok(views.html.index(Post.newest(), Post.older(1, 10)))
   }
 
-  def show(id: Long) = Action {
+  def show(id: Long) = Action { implicit request =>
     val post = Post.findById(id).get
-    Ok(views.html.show(post, post.previous(), post.next(), commentForm))
+    Ok(views.html.show(post, post.previous(), post.next(), commentForm)).flashing()
   }
 
   val commentForm = Form(
@@ -24,11 +24,18 @@ object Application extends Controller {
   )
 
   def postComment(postId: Long) = Action { implicit request =>
-    val commentData = commentForm.bindFromRequest.get
-
     val post = Post.findById(postId).get
-    post.addComment(commentData.author, commentData.content)
-    Redirect(routes.Application.show(postId))
+    commentForm.bindFromRequest.fold(
+      hasErrors = { error =>
+        BadRequest(views.html.show(post, post.previous(), post.next(), error))
+      },
+      success = { commentData =>
+        post.addComment(commentData.author, commentData.content)
+        Redirect(routes.Application.show(postId)).flashing(
+          "success" -> s"Thanks for posting ${commentData.author }"
+        )
+      }
+    )
   }
 
 }

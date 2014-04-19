@@ -1,5 +1,5 @@
-@(post: Post, prev: Option[Post], next: Option[Post], comment: Form[CommentData])
-@import helper._
+@(post: Post, prev: Option[Post], next: Option[Post], comment: Form[CommentData])(implicit flash: Flash)
+  @import helper._
 
 @main(post.title) {
   <ul id="pagination">
@@ -18,6 +18,9 @@
       </li>
     }
   </ul>
+  @if(flash.get("success")) {
+    <p class="success">@flash.get("success")</p>
+  }
   @tags.display(post, "full")
 
   <h3>Post a comment</h3>
